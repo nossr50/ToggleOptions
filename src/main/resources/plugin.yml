@@ -1,0 +1,9 @@
+name: ToggleOptions
+version: ${project.version}
+main: net.draycia.toggleoptions.ToggleOptions
+api-version: 1.13
+depend: [Vault]
+commands:
+  toggle:
+    usage: /toggle <option> <on/off>
+    description: Base command used to toggle permissions on/off.

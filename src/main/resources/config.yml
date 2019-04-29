@@ -1,0 +1,29 @@
+Toggles:
+  # This can be anything, whatever this is set to is what the user has to input
+  # Capitalization is not important, but the option will show ingame as it's set here
+  ExampleOne:
+    # The permission the player has to have to toggle the permission on
+    # Remove the entry or leave blank to not require one
+    RequiredOn: 'another.permission'
+    # The permission the player has to have to toggle the permission off
+    # Remove the entry or leave blank to not require one
+    RequiredOff: 'another.permission'
+    # The permission to toggle
+    Toggle: 'toggled.permission.here'
+    # The messages to send to the player when the permission is toggled
+    # PlaceholderAPI is supported here
+    ToggledOn: 'toggled.permission.here has been turned on!'
+    ToggledOff: 'toggled.permission.here has been turned off!'
+    # Should the permission be world specific?
+    WorldSpecific: false
+  ExampleTwo:
+    RequiredOn: 'another.permission'
+    RequiredOff: 'another.permission'
+    Toggle: 'toggled.permission.here'
+    ToggledOn: 'toggled.permission.here has been turned on!'
+    ToggledOff: 'toggled.permission.here has been turned off!'
+    WorldSpecific: false
+
+Messages:
+  NotOnOff: '&cInvalid argument! Must supply "on" or "off".'
+  InvalidOption: '&cThat option is not valid!'
