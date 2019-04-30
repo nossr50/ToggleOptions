@@ -9,12 +9,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 public class CommandToggle implements TabExecutor {
+    
+    private ToggleOptions pluginRef;
+    
+    public CommandToggle(ToggleOptions toggleOptions)
+    {
+        this.pluginRef = toggleOptions;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -22,18 +30,18 @@ public class CommandToggle implements TabExecutor {
         if (args.length < 2) return true;
 
         if (!args[1].equalsIgnoreCase("on") && !args[1].equalsIgnoreCase("off")) {
-            String notOnOff = ToggleOptions.instance.getConfig().getString("Messages.NotOnOff");
+            String notOnOff = pluginRef.getConfig().getString("Messages.NotOnOff");
             if (notOnOff == null) notOnOff = "&cInvalid argument! Must supply \"on\" or \"off\".";
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', notOnOff));
             return true;
         }
 
-        ConfigurationSection configSection = ToggleOptions.instance.getConfig().getConfigurationSection("Toggles");
+        ConfigurationSection configSection = pluginRef.getConfig().getConfigurationSection("Toggles");
 
         if (configSection == null) {
             String missingSection = ChatColor.translateAlternateColorCodes('&', "Toggles section missing!");
             sender.sendMessage(missingSection);
-            ToggleOptions.instance.getLogger().log(Level.WARNING, missingSection);
+            pluginRef.getLogger().log(Level.WARNING, missingSection);
             return true;
         }
 
@@ -44,7 +52,7 @@ public class CommandToggle implements TabExecutor {
         }
 
         if (toggleEntry == null) {
-            String invalidOption = ToggleOptions.instance.getConfig().getString("Messages.InvalidOption");
+            String invalidOption = pluginRef.getConfig().getString("Messages.InvalidOption");
             if (invalidOption == null) invalidOption = "&cThat option is not valid!";
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', invalidOption));
             return true;
@@ -58,9 +66,9 @@ public class CommandToggle implements TabExecutor {
             if (requiredPermission == null || requiredPermission.isEmpty() || sender.hasPermission(requiredPermission)) {
                 System.out.println("on");
                 if (toggleEntry.getBoolean("WorldSpecific")) {
-                    ToggleOptions.permissions.playerAdd(player.getWorld().getName(), player, toggleEntry.getString("Toggle"));
+                    ToggleOptions.getPermissions().playerAdd(player.getWorld().getName(), player, toggleEntry.getString("Toggle"));
                 } else {
-                    ToggleOptions.permissions.playerAdd(null, player, toggleEntry.getString("Toggle"));
+                    ToggleOptions.getPermissions().playerAdd(null, player, toggleEntry.getString("Toggle"));
                 }
             }
 
@@ -70,9 +78,9 @@ public class CommandToggle implements TabExecutor {
             if (requiredPermission == null || requiredPermission.isEmpty() || sender.hasPermission(requiredPermission)) {
                 System.out.println("off");
                 if (toggleEntry.getBoolean("WorldSpecific")) {
-                    ToggleOptions.permissions.playerRemove(player.getWorld().getName(), player, toggleEntry.getString("Toggle"));
+                    ToggleOptions.getPermissions().playerRemove(player.getWorld().getName(), player, toggleEntry.getString("Toggle"));
                 } else {
-                    ToggleOptions.permissions.playerRemove(null, player, toggleEntry.getString("Toggle"));
+                    ToggleOptions.getPermissions().playerRemove(null, player, toggleEntry.getString("Toggle"));
                 }
             }
         }
@@ -84,7 +92,7 @@ public class CommandToggle implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        ConfigurationSection configSection = ToggleOptions.instance.getConfig().getConfigurationSection("Toggles");
+        ConfigurationSection configSection = pluginRef.getConfig().getConfigurationSection("Toggles");
 
         if (configSection == null) return null;
 

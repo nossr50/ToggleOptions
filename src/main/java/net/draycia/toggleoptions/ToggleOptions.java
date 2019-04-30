@@ -8,8 +8,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ToggleOptions extends JavaPlugin {
 
-    public static ToggleOptions instance;
-    public static Permission permissions;
+    private static ToggleOptions instance;
+    private static Permission permissions;
 
     @Override
     public void onEnable() {
@@ -20,8 +20,24 @@ public final class ToggleOptions extends JavaPlugin {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         permissions = rsp.getProvider();
 
-        TabExecutor toggleCommand = new CommandToggle();
+        TabExecutor toggleCommand = new CommandToggle(this);
         getCommand("toggle").setExecutor(toggleCommand);
         getCommand("toggle").setTabCompleter(toggleCommand);
+    }
+
+    /**
+     * Get the instance of this class
+     * @return instance of this plugin
+     */
+    public static ToggleOptions getInstance() {
+        return instance;
+    }
+
+    /**
+     * Get the instance of Permission
+     * @return instance of Permission
+     */
+    public static Permission getPermissions() {
+        return permissions;
     }
 }
