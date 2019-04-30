@@ -114,7 +114,7 @@ public class CommandToggle implements TabExecutor {
 
         if(args.length > 0)
         {
-            if(args.length >= 2)
+            if(args.length == 2)
             {
                 return StringUtil.copyPartialMatches(args[1], tabArg2, new ArrayList<String>());
             } else {
@@ -123,32 +123,5 @@ public class CommandToggle implements TabExecutor {
         } else {
             return ImmutableList.copyOf(new ArrayList<String>());
         }
-
-//        ArrayList<String> suggestions = new ArrayList<>();
-//
-//        if (args.length >= 2) {
-//            suggestions.add("on");
-//            suggestions.add("off");
-//            return ImmutableList.copyOf(suggestions);
-//        }
-//
-//        for (String key : configSection.getKeys(false)) {
-//            if (args.length == 1 && key.startsWith(args[0])) {
-//                suggestions.add(key);
-//                continue;
-//            }
-//
-//            ConfigurationSection toggle = configSection.getConfigurationSection(key);
-//            if (toggle == null) return null;
-//
-//            String required = toggle.getString("required");
-//
-//            if (required != null && sender.hasPermission(required)) {
-//                String permToggle = toggle.getString("toggle");
-//                if (permToggle != null) suggestions.add(key);
-//            }
-//        }
-//
-//        return ImmutableList.copyOf(suggestions);
     }
 }
