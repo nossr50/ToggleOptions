@@ -2,7 +2,6 @@ package net.draycia.toggleoptions.commands;
 
 import com.google.common.collect.ImmutableList;
 import net.draycia.toggleoptions.ToggleOptions;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,10 +17,27 @@ import java.util.logging.Level;
 public class CommandToggle implements TabExecutor {
     
     private ToggleOptions pluginRef;
-    
+    private final ArrayList<String> tabArg1;
+    private final ArrayList<String> tabArg2;
+
     public CommandToggle(ToggleOptions toggleOptions)
     {
         this.pluginRef = toggleOptions;
+        tabArg1 = buildSuggestionsArgOne();
+        tabArg2 = buildSuggestionsArgTwo();
+    }
+
+    private ArrayList<String> buildSuggestionsArgOne() {
+        ArrayList<String> suggestions = new ArrayList<>();
+        suggestions.addAll(pluginRef.getConfig().getConfigurationSection("Toggles").getKeys(false));
+        return suggestions;
+    }
+
+    private ArrayList<String> buildSuggestionsArgTwo() {
+        ArrayList<String> suggestions = new ArrayList<>();
+        suggestions.add("on");
+        suggestions.add("off");
+        return suggestions;
     }
 
     @Override
@@ -96,31 +112,43 @@ public class CommandToggle implements TabExecutor {
 
         if (configSection == null) return null;
 
-        ArrayList<String> suggestions = new ArrayList<>();
-
-        if (args.length >= 2) {
-            suggestions.add("on");
-            suggestions.add("off");
-            return ImmutableList.copyOf(suggestions);
+        if(args.length > 0)
+        {
+            if(args.length >= 2)
+            {
+                return StringUtil.copyPartialMatches(args[1], tabArg2, new ArrayList<String>());
+            } else {
+                return StringUtil.copyPartialMatches(args[0], tabArg1, new ArrayList<String>());
+            }
+        } else {
+            return ImmutableList.copyOf(new ArrayList<String>());
         }
 
-        for (String key : configSection.getKeys(false)) {
-            if (args.length == 1 && key.startsWith(args[0])) {
-                suggestions.add(key);
-                continue;
-            }
-
-            ConfigurationSection toggle = configSection.getConfigurationSection(key);
-            if (toggle == null) return null;
-
-            String required = toggle.getString("required");
-
-            if (required != null && sender.hasPermission(required)) {
-                String permToggle = toggle.getString("toggle");
-                if (permToggle != null) suggestions.add(key);
-            }
-        }
-
-        return ImmutableList.copyOf(suggestions);
+//        ArrayList<String> suggestions = new ArrayList<>();
+//
+//        if (args.length >= 2) {
+//            suggestions.add("on");
+//            suggestions.add("off");
+//            return ImmutableList.copyOf(suggestions);
+//        }
+//
+//        for (String key : configSection.getKeys(false)) {
+//            if (args.length == 1 && key.startsWith(args[0])) {
+//                suggestions.add(key);
+//                continue;
+//            }
+//
+//            ConfigurationSection toggle = configSection.getConfigurationSection(key);
+//            if (toggle == null) return null;
+//
+//            String required = toggle.getString("required");
+//
+//            if (required != null && sender.hasPermission(required)) {
+//                String permToggle = toggle.getString("toggle");
+//                if (permToggle != null) suggestions.add(key);
+//            }
+//        }
+//
+//        return ImmutableList.copyOf(suggestions);
     }
 }
